@@ -1,3 +1,11 @@
+from abc import ABC
+
+
+class InputError(Exception):
+    def __init__(self, txt):
+        self.txt = txt
+
+
 class Sklad:
     tec = {}
 
@@ -5,10 +13,16 @@ class Sklad:
         Sklad.tec[i] = self.__dict__
 
     def change_place(self, i):
-        Sklad.tec[i]['place'] = input('Введите новое подразделение: ')
+        place = input(
+            'Введите номер нового подразделения (1 - Главный офис, 2 - Склад, 3 - Отдел логистики, 4 - Маркетинговый отдел) : ')
+        places = ['Главный офис', 'Склад', 'Отдел логистики', 'Маркетинговый отдел']
+        if 0 < int(place) < 4:
+            Sklad.tec[i]['place'] = places[int(place) - 1]
+        else:
+            print(InputError('Вводите корректные значения!'))
 
 
-class OrgTec:
+class OrgTec(ABC):
     def __init__(self, firm, cost, year_of_bought, typ='smth', place='main_office'):
         self.firm = firm
         self.cost = cost
@@ -97,6 +111,10 @@ try:
                                 print('Такого ксерокса здесь нет...')
                     else:
                         print('К сожалению ксероксы ещё не поступали...')
+                elif typ_og_tec.isalpha():
+                    print(InputError('Вводите цифры!'))
+                else:
+                    print('Повторите ввод: ')
             elif choise.lower() == 'n':
                 break
         elif num_of_tec == '1':
@@ -108,6 +126,8 @@ try:
         elif num_of_tec == '3':
             xeroxes.append(Xerox(input('Введите фирму ксерокса: '), input('Введите стоимость ксерокса: '),
                                  input('Введите текущий год: '), input('Введите скорость копирования ( стр/мин ): ')))
+        elif num_of_tec.isalpha():
+            print(InputError('Вводите цифры!'))
         else:
             print('Повторите ввод: ')
 
@@ -130,4 +150,4 @@ try:
 
     print(f'На складе имеются следующие товары:\n{Sklad.tec}')
 except:
-    print('Вводите указанные символы!!!')
+    print('Вводите корректные значения!!!!!!!!')
